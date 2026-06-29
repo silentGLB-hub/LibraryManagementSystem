@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: library-management-system-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /login
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: LIBRARY_DB_URL
+        sync: false
+      - key: LIBRARY_DB_USER
+        sync: false
+      - key: LIBRARY_DB_PASSWORD
+        sync: false
+      - key: LIBRARY_SMTP_HOST
+        sync: false
+      - key: LIBRARY_SMTP_PORT
+        value: "587"
+      - key: LIBRARY_SMTP_TLS
+        value: "true"
+      - key: LIBRARY_SMTP_FROM
+        sync: false
+      - key: LIBRARY_SMTP_USER
+        sync: false
+      - key: LIBRARY_SMTP_PASSWORD
+        sync: false

@@ -39,12 +39,12 @@ public class AuthController {
                 return "redirect:/dashboard";
             }
 
-            model.addAttribute("error", "Wrong username or password.");
+            model.addAttribute("error", "Sai tên đăng nhập hoặc mật khẩu.");
             return "login";
 
         } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("error", "System error: " + e.getMessage());
+            model.addAttribute("error", "Lỗi hệ thống: " + e.getMessage());
             return "login";
         }
     }
@@ -64,10 +64,10 @@ public class AuthController {
                            Model model) {
         try {
             userDAO.register(username, password, fullName);
-            model.addAttribute("message", "Registration successful. Please log in.");
+            model.addAttribute("message", "Đăng ký thành công. Vui lòng đăng nhập.");
             return "login";
         } catch (Exception e) {
-            model.addAttribute("error", "Cannot register: " + e.getMessage());
+            model.addAttribute("error", "Không thể đăng ký: " + e.getMessage());
             return "register";
         }
     }

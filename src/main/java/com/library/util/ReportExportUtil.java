@@ -16,7 +16,7 @@ public final class ReportExportUtil {
     public static void writeExcelHtml(List<BorrowRecord> records, OutputStream out) throws IOException {
         StringBuilder html = new StringBuilder();
         html.append("<html><head><meta charset=\"UTF-8\"></head><body>");
-        html.append("<table border=\"1\"><tr><th>Book</th><th>Reader</th><th>Borrow Date</th><th>Due Date</th><th>Return Date</th><th>Status</th><th>Fine</th></tr>");
+        html.append("<table border=\"1\"><tr><th>Sách</th><th>Độc giả</th><th>Ngày mượn</th><th>Hạn trả</th><th>Ngày trả</th><th>Trạng thái</th><th>Tiền phạt</th></tr>");
         for (BorrowRecord r : records) {
             html.append("<tr>")
                     .append(td(r.getBookTitle()))
@@ -34,8 +34,8 @@ public final class ReportExportUtil {
 
     public static void writePdf(List<BorrowRecord> records, OutputStream out) throws IOException {
         List<String> lines = new ArrayList<>();
-        lines.add("Library Borrow Report");
-        lines.add("Book | Reader | Due Date | Status | Fine");
+        lines.add("Báo cáo mượn sách thư viện");
+        lines.add("Sách | Độc giả | Hạn trả | Trạng thái | Tiền phạt");
         for (BorrowRecord r : records) {
             lines.add(safe(r.getBookTitle()) + " | " + safe(r.getReaderName()) + " | "
                     + r.getDueDate() + " | " + safe(r.getStatus()) + " | " + r.getFine());

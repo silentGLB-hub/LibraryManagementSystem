@@ -3,6 +3,7 @@ package com.library.controller;
 import com.library.dao.BookDAO;
 import com.library.dao.BorrowDAO;
 import com.library.dao.ReaderDAO;
+import com.library.model.BorrowRecord;
 import com.library.util.AuthUtil;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +51,13 @@ public class BorrowController {
                          RedirectAttributes redirect) {
         try {
             if (!AuthUtil.canManageLibrary(session)) {
-                redirect.addFlashAttribute("error", "Permission denied.");
+                redirect.addFlashAttribute("error", "Bạn không có quyền thực hiện thao tác này.");
                 return "redirect:/borrow";
             }
             borrowDAO.borrow(bookId, readerId, borrowDate, dueDate);
-            redirect.addFlashAttribute("message", "Da tao phieu muon.");
+            redirect.addFlashAttribute("message", "Đã tạo phiếu mượn.");
         } catch (Exception e) {
-            redirect.addFlashAttribute("error", "Khong the tao phieu muon: " + e.getMessage());
+            redirect.addFlashAttribute("error", "Không thể tạo phiếu mượn: " + e.getMessage());
         }
         return "redirect:/borrow";
     }
@@ -65,14 +66,39 @@ public class BorrowController {
     public String ret(@PathVariable("id") int id, HttpSession session, RedirectAttributes redirect) {
         try {
             if (!AuthUtil.canManageLibrary(session)) {
-                redirect.addFlashAttribute("error", "Permission denied.");
+                redirect.addFlashAttribute("error", "Bạn không có quyền thực hiện thao tác này.");
                 return "redirect:/borrow";
             }
             borrowDAO.returnBook(id);
-            redirect.addFlashAttribute("message", "Da tra sach.");
+            redirect.addFlashAttribute("message", "Đã trả sách.");
         } catch (Exception e) {
-            redirect.addFlashAttribute("error", "Khong the tra sach: " + e.getMessage());
+            redirect.addFlashAttribute("error", "Không thể trả sách: " + e.getMessage());
         }
         return "redirect:/borrow";
     }
+
+    @GetMapping("/print/{id}")
+    public String print(@PathVariable("id") int id,
+                        Model model,
+                        HttpSession session,
+                        RedirectAttributes redirect) {
+        try {
+            if (!AuthUtil.canManageLibrary(session)) {
+                redirect.addFlashAttribute("error", "Bạn không có quyền thực hiện thao tác này.");
+                return "redirect:/borrow";
+            }
+            BorrowRecord record = borrowDAO.findById(id);
+            if (record == null) {
+                redirect.addFlashAttribute("error", "Không tìm thấy phiếu mượn.");
+                return "redirect:/borrow";
+            }
+            model.addAttribute("record", record);
+            return "borrow-slip";
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Không thể in phiếu mượn: " + e.getMessage());
+            return "redirect:/borrow";
+        }
+    }
 }
+
+
