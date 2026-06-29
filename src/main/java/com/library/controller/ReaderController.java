@@ -39,7 +39,7 @@ public class ReaderController {
                        RedirectAttributes redirect) {
         try {
             if (!AuthUtil.canManageLibrary(session)) {
-                redirect.addFlashAttribute("error", "Permission denied.");
+                redirect.addFlashAttribute("error", "Bạn không có quyền thực hiện thao tác này.");
                 return "redirect:/readers";
             }
             Reader reader = new Reader();
@@ -48,7 +48,7 @@ public class ReaderController {
             reader.setPhone(phone);
             reader.setAddress(address);
             readerDAO.save(reader);
-            redirect.addFlashAttribute("message", "Reader saved.");
+            redirect.addFlashAttribute("message", "Đã lưu độc giả.");
         } catch (Exception e) {
             redirect.addFlashAttribute("error", e.getMessage());
         }
@@ -59,11 +59,11 @@ public class ReaderController {
     public String delete(@PathVariable("id") int id, HttpSession session, RedirectAttributes redirect) {
         try {
             if (!AuthUtil.canManageLibrary(session)) {
-                redirect.addFlashAttribute("error", "Permission denied.");
+                redirect.addFlashAttribute("error", "Bạn không có quyền thực hiện thao tác này.");
                 return "redirect:/readers";
             }
             readerDAO.delete(id);
-            redirect.addFlashAttribute("message", "Reader deleted.");
+            redirect.addFlashAttribute("message", "Đã xóa độc giả.");
         } catch (Exception e) {
             redirect.addFlashAttribute("error", e.getMessage());
         }
