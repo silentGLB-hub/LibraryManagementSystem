@@ -16,7 +16,6 @@ public class BorrowRecord {
     private Date dueDate;
     private Date returnDate;
     private BigDecimal fine;
-    private boolean readerReturnAllowed;
 
     public int getId() {
         return id;
@@ -104,13 +103,5 @@ public class BorrowRecord {
 
     public void setFine(BigDecimal fine) {
         this.fine = fine;
-    }
-
-    public boolean isReaderReturnAllowed() {
-        return readerReturnAllowed;
-    }
-
-    public void setReaderReturnAllowed(boolean readerReturnAllowed) {
-        this.readerReturnAllowed = readerReturnAllowed;
     }
 }

@@ -27,27 +27,7 @@ public final class AuthUtil {
         return Arrays.stream(roles).anyMatch(role -> role.equalsIgnoreCase(user.getRole()));
     }
 
-    public static boolean isAdmin(HttpSession session) {
-        return hasAnyRole(session, "ADMIN");
-    }
-
-    public static boolean isLibrarian(HttpSession session) {
-        return hasAnyRole(session, "LIBRARIAN");
-    }
-
-    public static boolean isReader(HttpSession session) {
-        return hasAnyRole(session, "READER");
-    }
-
     public static boolean canManageLibrary(HttpSession session) {
-        return hasAnyRole(session, "ADMIN", "LIBRARIAN");
-    }
-
-    public static boolean canManageUsers(HttpSession session) {
-        return isAdmin(session);
-    }
-
-    public static boolean canViewReports(HttpSession session) {
         return hasAnyRole(session, "ADMIN", "LIBRARIAN");
     }
 }

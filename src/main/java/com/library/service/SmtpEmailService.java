@@ -29,10 +29,10 @@ public class SmtpEmailService {
             if (record.getReaderEmail() == null || record.getReaderEmail().trim().isEmpty()) {
                 continue;
             }
-            send(settings, record.getReaderEmail(), "Nhắc nhở sách quá hạn",
-                    "Xin chào " + record.getReaderName() + ",\n\n"
-                            + "The book \"" + record.getBookTitle() + "\" đã đến hạn trả vào ngày " + record.getDueDate() + ".\n"
-                            + "Vui lòng trả sách trong thời gian sớm nhất.\n\nHệ thống quản lý thư viện");
+            send(settings, record.getReaderEmail(), "Library overdue reminder",
+                    "Hello " + record.getReaderName() + ",\n\n"
+                            + "The book \"" + record.getBookTitle() + "\" was due on " + record.getDueDate() + ".\n"
+                            + "Please return it as soon as possible.\n\nLibrary Management System");
             sent++;
         }
         return sent;
@@ -102,7 +102,7 @@ public class SmtpEmailService {
     private void expect(BufferedReader in, int expectedCode) throws Exception {
         String line = in.readLine();
         if (line == null || !line.startsWith(String.valueOf(expectedCode))) {
-            throw new IllegalStateException("Lỗi SMTP: " + line);
+            throw new IllegalStateException("SMTP error: " + line);
         }
         while (line.length() > 3 && line.charAt(3) == '-') {
             line = in.readLine();
@@ -122,7 +122,7 @@ public class SmtpEmailService {
             MailSettings settings = new MailSettings();
             settings.host = value("library.smtp.host", "LIBRARY_SMTP_HOST", "");
             if (settings.host.isEmpty()) {
-                throw new IllegalStateException("SMTP chưa được cấu hình. Hãy thiết lập LIBRARY_SMTP_HOST, LIBRARY_SMTP_PORT, LIBRARY_SMTP_FROM và tên đăng nhập/mật khẩu nếu cần.");
+                throw new IllegalStateException("SMTP is not configured. Set LIBRARY_SMTP_HOST, LIBRARY_SMTP_PORT, LIBRARY_SMTP_FROM, and optional username/password.");
             }
             settings.port = Integer.parseInt(value("library.smtp.port", "LIBRARY_SMTP_PORT", "587"));
             settings.username = value("library.smtp.user", "LIBRARY_SMTP_USER", "");

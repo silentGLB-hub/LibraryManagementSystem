@@ -34,52 +34,23 @@ public class CatalogController {
     @PostMapping("/{type}/save")
     public String save(@PathVariable("type") String type,
                        @RequestParam("name") String name,
-                       @RequestParam(value = "infoUrl", required = false) String infoUrl,
                        HttpSession session,
                        RedirectAttributes redirect) {
         try {
             if (!AuthUtil.canManageLibrary(session)) {
-                redirect.addFlashAttribute("error", "Bạn không có quyền thực hiện thao tác này.");
+                redirect.addFlashAttribute("error", "Permission denied.");
                 return "redirect:/catalog";
             }
             if ("category".equals(type)) {
-                catalogDAO.addCategory(name, infoUrl);
+                catalogDAO.addCategory(name);
             } else if ("author".equals(type)) {
-                catalogDAO.addAuthor(name, infoUrl);
+                catalogDAO.addAuthor(name);
             } else if ("publisher".equals(type)) {
-                catalogDAO.addPublisher(name, infoUrl);
+                catalogDAO.addPublisher(name);
             } else {
-                throw new IllegalArgumentException("Loại danh mục không hợp lệ.");
+                throw new IllegalArgumentException("Invalid catalog type.");
             }
-            redirect.addFlashAttribute("message", "Đã lưu.");
-        } catch (Exception e) {
-            redirect.addFlashAttribute("error", e.getMessage());
-        }
-        return "redirect:/catalog";
-    }
-
-    @PostMapping("/{type}/update/{id}")
-    public String update(@PathVariable("type") String type,
-                         @PathVariable("id") int id,
-                         @RequestParam("name") String name,
-                         @RequestParam(value = "infoUrl", required = false) String infoUrl,
-                         HttpSession session,
-                         RedirectAttributes redirect) {
-        try {
-            if (!AuthUtil.canManageLibrary(session)) {
-                redirect.addFlashAttribute("error", "Bạn không có quyền thực hiện thao tác này.");
-                return "redirect:/catalog";
-            }
-            if ("category".equals(type)) {
-                catalogDAO.updateCategory(id, name, infoUrl);
-            } else if ("author".equals(type)) {
-                catalogDAO.updateAuthor(id, name, infoUrl);
-            } else if ("publisher".equals(type)) {
-                catalogDAO.updatePublisher(id, name, infoUrl);
-            } else {
-                throw new IllegalArgumentException("Loại danh mục không hợp lệ.");
-            }
-            redirect.addFlashAttribute("message", "Đã cập nhật.");
+            redirect.addFlashAttribute("message", "Saved.");
         } catch (Exception e) {
             redirect.addFlashAttribute("error", e.getMessage());
         }
@@ -93,7 +64,7 @@ public class CatalogController {
                          RedirectAttributes redirect) {
         try {
             if (!AuthUtil.canManageLibrary(session)) {
-                redirect.addFlashAttribute("error", "Bạn không có quyền thực hiện thao tác này.");
+                redirect.addFlashAttribute("error", "Permission denied.");
                 return "redirect:/catalog";
             }
             if ("category".equals(type)) {
@@ -103,11 +74,11 @@ public class CatalogController {
             } else if ("publisher".equals(type)) {
                 catalogDAO.deletePublisher(id);
             } else {
-                throw new IllegalArgumentException("Loại danh mục không hợp lệ.");
+                throw new IllegalArgumentException("Invalid catalog type.");
             }
-            redirect.addFlashAttribute("message", "Đã xóa.");
+            redirect.addFlashAttribute("message", "Deleted.");
         } catch (Exception e) {
-            redirect.addFlashAttribute("error", "Không thể xóa mục đang được sử dụng.");
+            redirect.addFlashAttribute("error", "Cannot delete item that is being used.");
         }
         return "redirect:/catalog";
     }

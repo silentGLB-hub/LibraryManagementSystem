@@ -6,8 +6,6 @@ public class ChartPoint {
     private int barValue;
     private int lineValue;
     private int barPercent;
-    private int barY;
-    private int barHeight;
     private int x;
     private int y;
 
@@ -41,22 +39,6 @@ public class ChartPoint {
 
     public void setBarPercent(int barPercent) {
         this.barPercent = barPercent;
-    }
-
-    public int getBarY() {
-        return barY;
-    }
-
-    public void setBarY(int barY) {
-        this.barY = barY;
-    }
-
-    public int getBarHeight() {
-        return barHeight;
-    }
-
-    public void setBarHeight(int barHeight) {
-        this.barHeight = barHeight;
     }
 
     public int getX() {

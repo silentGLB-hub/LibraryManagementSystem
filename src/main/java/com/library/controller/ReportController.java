@@ -3,7 +3,6 @@ package com.library.controller;
 import com.library.dao.BorrowDAO;
 import com.library.model.BorrowRecord;
 import com.library.model.ChartPoint;
-import com.library.model.StatItem;
 import com.library.service.SmtpEmailService;
 import com.library.util.AuthUtil;
 import com.library.util.ReportExportUtil;
@@ -33,21 +32,12 @@ public class ReportController {
             return "redirect:/login";
         }
         model.addAttribute("records", borrowDAO.findAll());
-        List<StatItem> statusStats = borrowDAO.countByStatus();
-        List<StatItem> topBooks = borrowDAO.topBorrowedBooks(5);
-        List<StatItem> yearlyStats = borrowDAO.borrowCountByYear();
-        List<StatItem> readerActivity = borrowDAO.readerActivity(6);
-
-        model.addAttribute("statusStats", statusStats);
-        model.addAttribute("statusLinePoints", statLinePoints(statusStats));
-        model.addAttribute("topBooks", topBooks);
-        model.addAttribute("topBooksLinePoints", statLinePoints(topBooks));
+        model.addAttribute("statusStats", borrowDAO.countByStatus());
+        model.addAttribute("topBooks", borrowDAO.topBorrowedBooks(5));
         model.addAttribute("overdueRecords", borrowDAO.findOverdue());
         model.addAttribute("monthlyStats", borrowDAO.borrowCountByMonth());
-        model.addAttribute("yearlyStats", yearlyStats);
-        model.addAttribute("yearlyLinePoints", statLinePoints(yearlyStats));
-        model.addAttribute("readerActivity", readerActivity);
-        model.addAttribute("readerActivityLinePoints", statLinePoints(readerActivity));
+        model.addAttribute("yearlyStats", borrowDAO.borrowCountByYear());
+        model.addAttribute("readerActivity", borrowDAO.readerActivity(6));
         List<ChartPoint> monthlyChart = borrowDAO.monthlyBorrowReturnChart();
         model.addAttribute("monthlyChart", monthlyChart);
         model.addAttribute("monthlyLinePoints", linePoints(monthlyChart));
@@ -81,22 +71,22 @@ public class ReportController {
     public String sendReminders(HttpSession session, RedirectAttributes redirect) {
         try {
             if (!AuthUtil.canManageLibrary(session)) {
-                redirect.addFlashAttribute("error", "Bạn không có quyền thực hiện thao tác này.");
+                redirect.addFlashAttribute("error", "Permission denied.");
                 return "redirect:/reports";
             }
             if (!emailService.isConfigured()) {
-                redirect.addFlashAttribute("warning", "SMTP chưa được cấu hình nên email nhắc quá hạn chưa được gửi.");
+                redirect.addFlashAttribute("warning", "SMTP is not configured, so overdue reminder emails were not sent.");
                 return "redirect:/reports";
             }
             List<BorrowRecord> overdue = borrowDAO.findOverdue();
             if (overdue.isEmpty()) {
-                redirect.addFlashAttribute("message", "Không có phiếu quá hạn nào cần nhắc.");
+                redirect.addFlashAttribute("message", "There are no overdue records to remind.");
                 return "redirect:/reports";
             }
             int sent = emailService.sendOverdueReminders(overdue);
-            redirect.addFlashAttribute("message", "Đã gửi " + sent + " email nhắc quá hạn.");
+            redirect.addFlashAttribute("message", "Sent " + sent + " overdue reminder email(s).");
         } catch (Exception e) {
-            redirect.addFlashAttribute("error", "Không thể gửi nhắc nhở: " + e.getMessage());
+            redirect.addFlashAttribute("error", "Cannot send reminders: " + e.getMessage());
         }
         return "redirect:/reports";
     }
@@ -108,24 +98,6 @@ public class ReportController {
                 builder.append(' ');
             }
             builder.append(point.getX()).append(',').append(point.getY());
-        }
-        return builder.toString();
-    }
-
-    private String statLinePoints(List<StatItem> items) {
-        if (items == null || items.isEmpty()) {
-            return "";
-        }
-
-        StringBuilder builder = new StringBuilder();
-        int count = items.size();
-        for (int i = 0; i < count; i++) {
-            if (builder.length() > 0) {
-                builder.append(' ');
-            }
-            double x = ((i + 0.5) * 100.0) / count;
-            double y = 90.0 - (Math.min(100, items.get(i).getPercent()) * 0.75);
-            builder.append(String.format(java.util.Locale.ROOT, "%.2f,%.2f", x, y));
         }
         return builder.toString();
     }
