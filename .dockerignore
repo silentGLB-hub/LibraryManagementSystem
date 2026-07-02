@@ -1,0 +1,10 @@
+.git
+.gitignore
+.idea
+.vscode
+nbproject
+target
+*.log
+*.iml
+README-local.md
+screenshots*
